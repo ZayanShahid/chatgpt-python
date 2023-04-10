@@ -4,8 +4,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Current Project Scan
-        uses: anchore/scan-action@v3.3.5
+      - name: Create SBOM
+        uses: anchore/sbom-action@v0
         with:
-          path: "."
+          format: spdx-json
+          output-file: "${{ github.event.repository.name }}-sbom.spdx.json"
+
+      - name: Scan SBOM
+        uses: anchore/scan-action@v3
+        with:
+          sbom: "${{ github.event.repository.name }}-sbom.spdx.json"
           fail-build: false
